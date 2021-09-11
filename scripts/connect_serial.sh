@@ -1,0 +1,1 @@
+cat /dev/serial/by-path/pci-0000\:02\:03.0-usb-0\:1\:1.0
