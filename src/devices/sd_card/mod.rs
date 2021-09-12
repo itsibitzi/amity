@@ -1,36 +1,36 @@
 use core::fmt;
-use embedded_hal::digital::v2::OutputPin;
-use teensy4_bsp::t40::{P13, P9};
+use teensy4_bsp::t40::P9;
 use teensy4_bsp::{
-    hal::gpio::{Input, Output, GPIO},
+    hal::gpio::{Input, GPIO},
     t40::Pins,
 };
 
+use self::sdmmc::command::SDMMCCommand;
+use self::sdmmc::driver::SDMMCDriver;
+
+mod sdmmc;
+
 pub struct SdCard {
-    led_pin: GPIO<P13, Output>,
     det_pin: GPIO<P9, Input>,
+    driver: SDMMCDriver,
     pub det: bool,
 }
 
 impl SdCard {
     pub fn new(pins: Pins) -> SdCard {
-        let led = teensy4_bsp::configure_led(pins.p13);
-        let sd_card_in = GPIO::new(pins.p9);
-
         SdCard {
-            led_pin: led,
-            det_pin: sd_card_in,
+            driver: SDMMCDriver::new(),
+            det_pin: GPIO::new(pins.p9),
             det: false,
         }
     }
 
     pub fn poll(&mut self) {
+        self.driver.command(SDMMCCommand::GO_IDLE_STATE, 2);
         if self.det_pin.is_set() {
             self.det = true;
-            self.led_pin.set_high().unwrap();
         } else {
             self.det = false;
-            self.led_pin.set_low().unwrap();
         }
     }
 }

@@ -1,1 +1,10 @@
-cat /dev/serial/by-path/pci-0000\:02\:03.0-usb-0\:1\:1.0
+function cat_device {
+    cat /dev/serial/by-id/usb-Teensyduino_USB_Serial_9986080-if00
+}
+
+while true
+do
+    cat_device
+    echo 'Connection broken, waiting for serial...'
+    sleep 5
+done

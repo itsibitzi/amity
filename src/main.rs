@@ -1,6 +1,3 @@
-//! The starter code slowly blinks the LED, and sets up
-//! USB logging.
-
 #![no_std]
 #![no_main]
 
